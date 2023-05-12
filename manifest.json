@@ -8,6 +8,6 @@
   "editorType": ["figma", "figjam"],
   "ui": "ui.html",
   "networkAccess": {
-    "allowedDomains": ["none"]
+    "allowedDomains": ["https://rodydavis.github.io/figma_flutter_plugin/"]
   }
 }

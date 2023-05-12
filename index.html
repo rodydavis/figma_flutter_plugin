@@ -415,13 +415,13 @@ _flutter.loader = null;
     const elem = document.getElementById('output');
     window.addEventListener('load', function (ev) {
       _flutter.loader.loadEntrypoint({
-        entrypointUrl: 'https://rodydavis.github.io/flutter_figma_plugin/main.dart.js',
+        entrypointUrl: 'https://rodydavis.github.io/figma_flutter_plugin/main.dart.js',
         onEntrypointLoaded: function (engineInitializer) {
           engineInitializer.initializeEngine({
             hostElement: elem,
             renderer: 'html',
-            assetBase: 'https://rodydavis.github.io/flutter_figma_plugin/assets/',
-            canvasKitBaseUrl: 'https://rodydavis.github.io/flutter_figma_plugin/',
+            assetBase: 'https://rodydavis.github.io/figma_flutter_plugin/assets/',
+            canvasKitBaseUrl: 'https://rodydavis.github.io/figma_flutter_plugin/',
           }).then(function (appRunner) {
             appRunner.runApp();
           });
