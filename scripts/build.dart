@@ -12,30 +12,40 @@ void main() async {
   ]);
   // <script src="flutter.js" defer></script>
   final outFile = File('build/web/index.html');
-  final outFlutterFile = File('build/web/flutter.js');
 
   // Make sure exists
   if (!outFile.existsSync()) {
     print('Error: build/web/index.html not found');
     exit(1);
   }
-  if (!outFlutterFile.existsSync()) {
-    print('Error: build/web/flutter.js not found');
-    exit(1);
-  }
 
   // Replace script tag with inline script
-  final html = await outFile.readAsString();
-  final flutterJs = await outFlutterFile.readAsString();
-  final sb = StringBuffer();
-  sb.writeln('<script>');
-  sb.writeln(flutterJs);
-  sb.writeln('</script>');
-  final newHtml = html.replaceAll(
-    '<script src="flutter.js" defer></script>',
-    sb.toString(),
-  );
-  await outFile.writeAsString(newHtml);
+  String html = await outFile.readAsString();
+  {
+    final jsFile = File('build/web/flutter.js');
+    final js = await jsFile.readAsString();
+    final sb = StringBuffer();
+    sb.writeln('<script>');
+    sb.writeln(js);
+    sb.writeln('</script>');
+    html = html.replaceAll(
+      '<script src="flutter.js" defer></script>',
+      sb.toString(),
+    );
+  }
+  {
+    final jsFile = File('build/web/main.dart.js');
+    final js = await jsFile.readAsString();
+    final sb = StringBuffer();
+    sb.writeln('<script id="app">');
+    sb.writeln(js);
+    sb.writeln('</script>');
+    html = html.replaceAll(
+      '<script id="app" src="main.dart.js" defer></script>',
+      sb.toString(),
+    );
+  }
+  await outFile.writeAsString(html);
 
   print('Flutter web build complete!');
   exit(0);

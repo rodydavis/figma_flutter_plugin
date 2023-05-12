@@ -1,68 +1,45 @@
-<!DOCTYPE html>
-<html>
+<base href="$FLUTTER_BASE_HREF">
+<div id="output"></div>
+<script src="flutter.js" defer></script>
+<script id="app" src="main.dart.js" defer></script>
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
 
-<head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+  body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+  #output {
+    width: 100vw;
+    height: 100vh;
+  }
+</style>
+<script>
+  const elem = document.getElementById('output');
+  const js = document.getElementById('app');
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  // Object url for js
+  const blob = new Blob([js.innerHTML], { type: 'text/javascript' });
+  const url = URL.createObjectURL(blob);
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="$FLUTTER_BASE_HREF">
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Figma Flutter Plugin Example">
-  <title>figma_flutter_plugin</title>
-  <script src="https://rodydavis.github.io/flutter_figma_plugin/flutter.js" defer></script>
-  <style>
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      height: 100%;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-    }
-
-    #output {
-      position: fixed;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-    }
-  </style>
-</head>
-
-<body>
-  <div id="output"></div>
-  <script>
-    const elem = document.getElementById('output');
-    window.addEventListener('load', function (ev) {
-      _flutter.loader.loadEntrypoint({
-        entrypointUrl: 'https://rodydavis.github.io/figma_flutter_plugin/main.dart.js',
-        onEntrypointLoaded: function (engineInitializer) {
-          engineInitializer.initializeEngine({
-            hostElement: elem,
-            renderer: 'html',
-            assetBase: 'https://rodydavis.github.io/figma_flutter_plugin/',
-            canvasKitBaseUrl: 'https://rodydavis.github.io/figma_flutter_plugin/',
-          }).then(function (appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
+  window.addEventListener('load', function (ev) {
+    _flutter.loader.loadEntrypoint({
+      entrypointUrl: url,
+      onEntrypointLoaded: function (engineInitializer) {
+        engineInitializer.initializeEngine({
+          hostElement: elem,
+          renderer: 'html',
+          assetBase: 'https://rodydavis.github.io/figma_flutter_plugin/',
+          canvasKitBaseUrl: 'https://rodydavis.github.io/figma_flutter_plugin/',
+        }).then(function (appRunner) {
+          appRunner.runApp();
+        });
+      }
     });
-  </script>
-</body>
-
-</html>
+  });
+</script>
