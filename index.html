@@ -54833,26 +54833,38 @@ else s([])})})()
   }
 </style>
 <script>
-  const elem = document.getElementById('output');
-  const js = document.getElementById('app');
+  // const elem = document.getElementById('output');
+  // const js = document.getElementById('app');
 
-  // Object url for js
-  const blob = new Blob([js.innerHTML], { type: 'text/javascript' });
-  const url = URL.createObjectURL(blob);
-
+  // const blob = new Blob([js.innerHTML], { type: 'text/javascript' });
+  // const url = URL.createObjectURL(blob);
   window.addEventListener('load', function (ev) {
-    _flutter.loader.loadEntrypoint({
-      entrypointUrl: url,
-      onEntrypointLoaded: function (engineInitializer) {
-        engineInitializer.initializeEngine({
-          hostElement: elem,
-          renderer: 'html',
-          assetBase: 'https://rodydavis.github.io/figma_flutter_plugin/',
-          canvasKitBaseUrl: 'https://rodydavis.github.io/figma_flutter_plugin/',
-        }).then(function (appRunner) {
-          appRunner.runApp();
-        });
-      }
-    });
+    _flutter.loader._onEntrypointLoaded = function (engineInitializer) {
+      engineInitializer.initializeEngine({
+        hostElement: document.getElementById('output'),
+        renderer: 'html',
+        assetBase: 'https://rodydavis.github.io/figma_flutter_plugin/',
+        canvasKitBaseUrl: 'https://rodydavis.github.io/figma_flutter_plugin/',
+      }).then(function (appRunner) {
+        appRunner.runApp();
+      });
+    };
+    _flutter.loader._scriptLoaded = true;
   });
+
+  // window.addEventListener('load', function (ev) {
+  //   _flutter.loader.loadEntrypoint({
+  //     entrypointUrl: url,
+  //     onEntrypointLoaded: function (engineInitializer) {
+  //       engineInitializer.initializeEngine({
+  //         hostElement: elem,
+  //         renderer: 'html',
+  //         assetBase: 'https://rodydavis.github.io/figma_flutter_plugin/',
+  //         canvasKitBaseUrl: 'https://rodydavis.github.io/figma_flutter_plugin/',
+  //       }).then(function (appRunner) {
+  //         appRunner.runApp();
+  //       });
+  //     }
+  //   });
+  // });
 </script>
