@@ -1,0 +1,3 @@
+[submodule "third_party/figma"]
+	path = third_party/figma
+	url = https://github.com/figma/plugin-typings

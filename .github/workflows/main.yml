@@ -1,0 +1,35 @@
+name: Publish site
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+
+      - name: Install
+        run: flutter pub get
+
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1.3
+
+      - name: Build Example
+        run: dart scripts/build.dart
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+  
