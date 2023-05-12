@@ -1,19 +1,14 @@
-@JS()
-library figma;
+import 'dart:html' as html;
 
-import 'package:js/js.dart';
-// import 'package:js/js_util' as js;
-
-void main() {}
-
-@JS()
-class Console {}
-
-extension on Console {
-  external void log(Object? message, [List<Object?>? optionalParams]);
-  // external void error(Object? message, [List<Object?>? optionalParams]);
-  // @JSExport('assert')
-  // external void assertion(bool condition, String? message,
-  //     [List<Object?>? data]);
-  external void clear();
+Future<void> sendMessage(
+  String type, [
+  Map<String, Object?> data = const {},
+]) async {
+  final parent = html.window.parent!;
+  final message = {
+    'pluginMessage': {'type': type, ...data}
+  };
+  parent.postMessage(message, '*');
 }
+
+Stream<Object?> onMessage() async* {}
