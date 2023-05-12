@@ -8,7 +8,7 @@ void main() async {
     '--csp',
     '--pwa-strategy=none',
     '--web-renderer=html',
-    '--base-href=/flutter_figma_plugin/',
+    '--base-href=/figma_flutter_plugin/',
   ]);
   // <script src="flutter.js" defer></script>
   final outFile = File('build/web/index.html');
@@ -31,16 +31,17 @@ void main() async {
   sb.writeln('<script>');
   sb.writeln(flutterJs);
   sb.writeln('</script>');
-
   final newHtml = html.replaceAll(
     '<script src="flutter.js" defer></script>',
     sb.toString(),
   );
   await outFile.writeAsString(newHtml);
+
   print('Flutter web build complete!');
   exit(0);
 }
 
+// Run a command and exit if it fails
 Future<void> run(String command, [List<String> args = const []]) async {
   final result = await Process.run(command, args, runInShell: true);
   if (result.exitCode != 0) {
