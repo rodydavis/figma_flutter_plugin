@@ -4252,6 +4252,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 clock
 fake_async
+figma_flutter_plugin
 material_color_utilities
 
 
