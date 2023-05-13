@@ -9,9 +9,8 @@ void main() async {
     '--pwa-strategy=none',
     '--web-renderer=html',
     '--base-href=/figma_flutter_plugin/',
-    '--dart2js-optimization=O1',
+    // '--dart2js-optimization=O1',
   ]);
-  // <script src="flutter.js" defer></script>
   final outFile = File('build/web/index.html');
 
   // Make sure exists

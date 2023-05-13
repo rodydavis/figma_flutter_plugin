@@ -6,7 +6,7 @@ Future<void> sendMessage(
 ]) async {
   final parent = html.window.parent!;
   final message = {
-    'pluginMessage': {'type': type, ...data}
+    'pluginMessage': {'msg_type': type, ...data}
   };
   parent.postMessage(message, '*');
 }
