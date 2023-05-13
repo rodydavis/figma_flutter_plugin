@@ -36,6 +36,14 @@ class _MyHomePageState extends State<MyHomePage> {
   final formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    getFigmaResult('init').then((event) {
+      print('init-results: $event');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -68,17 +76,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: () {
                     if (!formKey.currentState!.validate()) {
                       return;
                     }
                     formKey.currentState!.save();
-                    sendMessage('create-shapes', {
+                    sendFigmaMessage('create-shapes', {
                       'count': int.parse(controller.text),
                     });
                   },
-                  child: const Text('Create rectangles'),
+                  label: const Text('Create rectangles'),
+                  icon: const Icon(Icons.add),
                 ),
               ],
             ),

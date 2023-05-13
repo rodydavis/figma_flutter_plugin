@@ -65,7 +65,6 @@ Future<void> run(String command, [List<String> args = const []]) async {
 const OVERRIDES = r'''
 // Fix for fetch
 function FETCH(url, options = {}) {
-  console.log('fetch', url, options);
   return new Promise(function (resolve, reject) {
     const id = Math.random().toString(36).substring(2, 15);
     const message = {
@@ -80,7 +79,6 @@ function FETCH(url, options = {}) {
     window.addEventListener('message', function (event) {
       const msg = event.data.pluginMessage;
       if (msg.msg_type === 'fetch' && msg.id === id) {
-        console.log('fetch response', msg);
         if (msg.error) {
           reject(msg.error);
         } else {

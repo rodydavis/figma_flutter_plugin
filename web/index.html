@@ -41,4 +41,11 @@
     };
     _flutter.loader._scriptLoaded = true;
   });
+  window.onmessage = (event) => {
+    const ev = new CustomEvent('figma', {
+      detail: event.data.pluginMessage,
+    });
+    const el = document.getElementById('output');
+    el.dispatchEvent(ev);
+  };
 </script>

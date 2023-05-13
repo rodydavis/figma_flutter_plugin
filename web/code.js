@@ -4,8 +4,18 @@ figma.showUI(__html__, { width: 400, height: 500 });
 
 figma.ui.onmessage = async (msg) => {
   const type = msg.msg_type;
+  let { id } = msg;
+  if (type === "init") {
+    const result = {
+      msg_type: type,
+      editorType: figma.editorType,
+      command: figma.command,
+      id,
+    };
+    figma.ui.postMessage(result);
+  }
   if (type === "fetch") {
-    let { url, options, id } = msg;
+    let { url, options } = msg;
     if (!url.startsWith("http")) {
       url = `https://rodydavis.github.io/figma_flutter_plugin/${url}`;
     }
@@ -26,8 +36,6 @@ figma.ui.onmessage = async (msg) => {
         { msg_type: "fetch", result: raw, id },
         meta
       );
-
-      console.log("fetch result", result);
       figma.ui.postMessage(result);
     } catch (error) {
       figma.ui.postMessage({ msg_type: "fetch", error, id, headers });
