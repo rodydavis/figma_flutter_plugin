@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'src/figma.dart';
+import 'src/fonts.dart';
 
 void main() {
+  loadFonts();
   runApp(const MyApp());
 }
 
@@ -87,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     });
                   },
                   label: const Text('Create rectangles'),
-                  icon: const Icon(Icons.add),
+                  icon: const Icon(Icons.add, size: 18),
                 ),
               ],
             ),

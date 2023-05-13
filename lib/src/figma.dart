@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:html' as html;
 
 import 'package:flutter/foundation.dart';
@@ -22,7 +21,7 @@ void onFigmaMessage(ValueChanged<FigmaJson> callback) {
   parent.addEventListener('figma', (event) {
     final customEvent = event as html.CustomEvent;
     final detail = customEvent.detail;
-    final result = jsonDecode(jsonEncode(detail));
+    final result = detail;
     callback(result);
   });
 }
