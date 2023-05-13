@@ -6,8 +6,12 @@
   "capabilities": [],
   "enableProposedApi": false,
   "editorType": ["figma", "figjam"],
-  "ui": "ui.html",
+  "ui": "index.html",
   "networkAccess": {
-    "allowedDomains": ["https://rodydavis.github.io/figma_flutter_plugin/"]
+    "allowedDomains": [
+      "https://rodydavis.github.io/figma_flutter_plugin/",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ]
   }
 }
