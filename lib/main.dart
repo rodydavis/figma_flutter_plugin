@@ -13,13 +13,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const title = 'Figma Flutter Plugin';
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: title,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Figma Flutter Plugin Example'),
+      home: const MyHomePage(title: title),
     );
   }
 }
@@ -50,10 +51,36 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
-          IconButton(
-            onPressed: () => api.closePlugin(),
-            icon: const Icon(Icons.close),
-          ),
+          Builder(builder: (context) {
+            return IconButton(
+              onPressed: () async {
+                showBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Material(
+                      child: Column(
+                        children: [
+                          ListTile(
+                            leading: Icon(Icons.notifications),
+                            title: Text('Show notification'),
+                            onTap: () => api.notify('Hello from Flutter!'),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.close),
+                            title: Text('Close Plugin'),
+                            textColor: Theme.of(context).colorScheme.error,
+                            iconColor: Theme.of(context).colorScheme.error,
+                            onTap: () => api.closePlugin(),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              icon: const Icon(Icons.settings),
+            );
+          }),
         ],
       ),
       body: Center(

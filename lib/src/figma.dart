@@ -64,7 +64,7 @@ class FigmaApi {
     pluginId = info['id']?.toString() ?? '';
     initialized = true;
     print('Editor: $type');
-    print('Command: $command');
+    print('Command: "$command"');
     print('Plugin ID: $pluginId');
   }
 
@@ -80,6 +80,21 @@ class FigmaApi {
       'args': args,
       if (keys != null) 'keys': keys,
     });
+  }
+
+  Future<FigmaJson> notify(
+    String message, {
+    int? timeout,
+    bool? error,
+  }) async {
+    return execMethod(
+      'notify',
+      args: [message],
+      attributes: {
+        if (timeout != null) 'timeout': timeout,
+        if (error != null) 'error': error,
+      },
+    );
   }
 
   Future<FigmaJson> execCallback(
