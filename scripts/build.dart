@@ -14,6 +14,7 @@ void main() async {
       '--web-renderer=html',
       '--base-href=/figma_flutter_plugin/',
       // '--dart2js-optimization=O1',
+      '--dart-define=FIGMA=true',
     ]);
   }
 
@@ -72,12 +73,12 @@ void main() async {
       if (main.contains('main() {')) {
         main = main.replaceFirst(
           'main() {',
-          'main() async  {\n  await loadFonts();',
+          'main() async  {\n  if (bool.fromEnvironment(\'FIGMA\')) await loadFonts();',
         );
       } else if (main.contains('main() async {')) {
         main = main.replaceFirst(
           'main() async {',
-          'main() async {\n  await loadFonts();',
+          'main() async {\n  if (bool.fromEnvironment(\'FIGMA\')) await loadFonts();',
         );
       }
     }

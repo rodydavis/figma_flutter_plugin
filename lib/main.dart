@@ -4,7 +4,7 @@ import 'src/generated/fonts.dart';
 import 'src/figma.dart';
 
 void main() async {
-  await loadFonts();
+  if (bool.fromEnvironment('FIGMA')) await loadFonts();
   runApp(const MyApp());
 }
 
@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    api.init();
+    api.init().then((value) => setState(() {}));
     super.initState();
   }
 
@@ -57,46 +57,49 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: Center(
-        child: Form(
-          key: formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 300),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextFormField(
-                  controller: controller,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Number of rectangles',
+        child: !api.initialized
+            ? const CircularProgressIndicator()
+            : Form(
+                key: formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 300),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      TextFormField(
+                        controller: controller,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Number of rectangles',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a number';
+                          }
+                          if (int.tryParse(value) == null) {
+                            return 'Please enter a valid number';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          if (!formKey.currentState!.validate()) {
+                            return;
+                          }
+                          formKey.currentState!.save();
+                          api.createShapes(
+                              int.parse(controller.text), Colors.red);
+                        },
+                        label: const Text('Create rectangles'),
+                        icon: const Icon(Icons.add, size: 18),
+                      ),
+                    ],
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a number';
-                    }
-                    if (int.tryParse(value) == null) {
-                      return 'Please enter a valid number';
-                    }
-                    return null;
-                  },
                 ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    if (!formKey.currentState!.validate()) {
-                      return;
-                    }
-                    formKey.currentState!.save();
-                    api.createShapes(int.parse(controller.text), Colors.red);
-                  },
-                  label: const Text('Create rectangles'),
-                  icon: const Icon(Icons.add, size: 18),
-                ),
-              ],
-            ),
-          ),
-        ),
+              ),
       ),
     );
   }

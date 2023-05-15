@@ -1,6 +1,6 @@
 /// <reference path="../third_party/figma/index.d.ts" />
 
-figma.showUI(__html__, { width: 400, height: 500 });
+figma.showUI(__html__, { width: 380, height: 600 });
 
 figma.ui.onmessage = async (msg) => {
   const type = msg.msg_type;
