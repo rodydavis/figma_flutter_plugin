@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'src/generated/fonts.dart';
 
 import 'src/figma.dart';
-import 'src/fonts.dart';
 
-void main() {
-  loadFonts();
+void main() async {
+  await loadFonts();
   runApp(const MyApp());
 }
 
@@ -36,21 +36,25 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final controller = TextEditingController(text: '5');
   final formKey = GlobalKey<FormState>();
+  final api = FigmaApi();
 
   @override
   void initState() {
+    api.init();
     super.initState();
-    getFigmaResult('init').then((event) {
-      print('init-results: $event');
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            onPressed: () => api.closePlugin(),
+            icon: const Icon(Icons.close),
+          ),
+        ],
       ),
       body: Center(
         child: Form(
@@ -84,9 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       return;
                     }
                     formKey.currentState!.save();
-                    sendFigmaMessage('create-shapes', {
-                      'count': int.parse(controller.text),
-                    });
+                    api.createShapes(int.parse(controller.text), Colors.red);
                   },
                   label: const Text('Create rectangles'),
                   icon: const Icon(Icons.add, size: 18),
@@ -97,5 +99,78 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+}
+
+extension on FigmaApi {
+  Future<void> createShapes(int count, Color color) async {
+    final ids = <String>[];
+    for (var i = 0; i < count; i++) {
+      if (type == FigmaEditorType.figma) {
+        final res = await execMethod(
+          'createRectangle',
+          attributes: {
+            'x': i * 150,
+            'fills': [
+              {
+                'type': 'SOLID',
+                'color': color.toFigma(),
+              },
+            ],
+          },
+          keys: ['id', 'name'],
+        );
+        final result = res['result'] as Map;
+        final id = result['id']?.toString();
+        if (id != null) ids.add(id);
+      } else {
+        final res = await execMethod(
+          'createShapeWithText',
+          attributes: {
+            'shapeType': FigJamShapeType.ROUNDED_RECTANGLE.name,
+            'fills': [
+              {
+                'type': 'SOLID',
+                'color': color.toFigma(),
+              },
+            ],
+          },
+          keys: ['id', 'name', 'width'],
+        );
+        final result = res['result'] as Map;
+        final id = result['id']?.toString();
+        if (id != null) {
+          final width = num.parse(result['width'].toString());
+          await nodeOptions(id, attributes: {
+            'x': i * (width + 200),
+          });
+          ids.add(id);
+        }
+      }
+    }
+
+    if (type == FigmaEditorType.figJam) {
+      for (var i = 0; i < count - 1; i++) {
+        await execMethod(
+          'createConnector',
+          attributes: {
+            'strokeWeight': 8,
+            'connectorStart': {
+              'endpointNodeId': ids[i],
+              'magnet': 'AUTO',
+            },
+            'connectorEnd': {
+              'endpointNodeId': ids[i = 1],
+              'magnet': 'AUTO',
+            },
+          },
+          keys: ['id', 'name', 'width'],
+        );
+      }
+    }
+
+    await appendToCurrentPage(ids);
+    await setSelection(ids);
+    await scrollAndZoomIntoView(ids);
   }
 }

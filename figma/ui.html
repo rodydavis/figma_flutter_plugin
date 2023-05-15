@@ -1,0 +1,44 @@
+<div id="output" class="loading"></div>
+<script src="flutter.js" defer></script>
+<script id="app" src="main.dart.js" defer></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Roboto, sans-serif;
+  }
+  #output {
+    width: 100vw;
+    height: 100vh;
+  }
+</style>
+<script>
+  const output = document.getElementById('output');
+  const baseUrl = '$BASE_URL/';
+  window.addEventListener('load', function (ev) {
+    _flutter.loader._onEntrypointLoaded = function (engineInitializer) {
+      engineInitializer.initializeEngine({
+        hostElement: output,
+        assetBase: baseUrl,
+        canvasKitBaseUrl: baseUrl,
+      }).then(function (appRunner) {
+        appRunner.runApp();
+      });
+    };
+    _flutter.loader._scriptLoaded = true;
+    output.classList.remove('loading');
+  });
+  window.onmessage = (event) => {
+    const ev = new CustomEvent('figma', {
+      detail: event.data.pluginMessage,
+    });
+    output.dispatchEvent(ev);
+  };
+</script>

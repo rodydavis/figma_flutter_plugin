@@ -1,64 +1,59 @@
-<base href="$FLUTTER_BASE_HREF">
-<div id="output"></div>
-<script src="flutter.js" defer></script>
-<script id="app" src="main.dart.js" defer></script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
-<style>
-  html {
-    scroll-behavior: smooth;
-  }
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
 
-  body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: Roboto, sans-serif;
-  }
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
 
-  #output {
-    width: 100vw;
-    height: 100vh;
-  }
-</style>
-<script>
-  const output = document.getElementById('output');
-  const baseUrl = 'https://rodydavis.github.io/figma_flutter_plugin/';
-  window.addEventListener('load', function (ev) {
-    _flutter.loader._onEntrypointLoaded = function (engineInitializer) {
-      engineInitializer.initializeEngine({
-        hostElement: output,
-        assetBase: baseUrl,
-        canvasKitBaseUrl: baseUrl,
-      }).then(function (appRunner) {
-        appRunner.runApp();
-      });
-    };
-    _flutter.loader._scriptLoaded = true;
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
 
-    // Load fonts
-    window.fetch(`${baseUrl}assets/FontManifest.json`).then((response) => {
-      return response.json();
-    }).then((assets) => {
-      for (const { family, fonts } of assets) {
-        for (const { asset } of fonts) {
-          window.fetch(`${baseUrl}assets/${asset}`).then((res) => {
-            return res.arrayBuffer();
-          }).then((arrayBuffer) => {
-            const bytes = new Uint8Array(arrayBuffer);
-            const event = new CustomEvent('font', {
-              detail: { family, buffer: bytes },
-            });
-            output.dispatchEvent(event);
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="figma_flutter_plugin">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>figma_flutter_plugin</title>
+  <link rel="manifest" href="manifest.json">
+
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    var serviceWorkerVersion = null;
+  </script>
+  <!-- This script adds the flutter initialization JS code -->
+  <script src="flutter.js" defer></script>
+</head>
+<body>
+  <script>
+    window.addEventListener('load', function(ev) {
+      // Download main.dart.js
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            appRunner.runApp();
           });
         }
-      }
+      });
     });
-  });
-  window.onmessage = (event) => {
-    const ev = new CustomEvent('figma', {
-      detail: event.data.pluginMessage,
-    });
-    output.dispatchEvent(ev);
-  };
-</script>
+  </script>
+</body>
+</html>

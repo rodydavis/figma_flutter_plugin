@@ -1,9 +1,8 @@
 name: figma_flutter_plugin
 description: A new Flutter project.
-
 publish_to: "none"
-
 version: 1.0.0+1
+assets_cdn: https://rodydavis.github.io/figma_flutter_plugin
 
 environment:
   sdk: ^3.0.0
@@ -23,3 +22,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+scripts:
+  build: dart scripts/build.dart
