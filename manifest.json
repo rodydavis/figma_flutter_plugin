@@ -1,17 +1,35 @@
 {
-  "name": "figma_flutter_plugin",
-  "id": "1238949348262757776",
-  "api": "1.0.0",
-  "main": "code.js",
-  "capabilities": [],
-  "enableProposedApi": false,
-  "editorType": ["figma", "figjam"],
-  "ui": "index.html",
-  "networkAccess": {
-    "allowedDomains": [
-      "https://rodydavis.github.io/figma_flutter_plugin/",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+    "name": "figma_flutter_plugin",
+    "short_name": "figma_flutter_plugin",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0175C2",
+    "theme_color": "#0175C2",
+    "description": "A new Flutter project.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
     ]
-  }
 }
