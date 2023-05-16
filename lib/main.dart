@@ -47,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -68,8 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           ListTile(
                             leading: Icon(Icons.close),
                             title: Text('Close Plugin'),
-                            textColor: Theme.of(context).colorScheme.error,
-                            iconColor: Theme.of(context).colorScheme.error,
+                            textColor: colors.error,
+                            iconColor: colors.error,
                             onTap: () => api.closePlugin(),
                           ),
                         ],
@@ -118,11 +119,38 @@ class _MyHomePageState extends State<MyHomePage> {
                           }
                           formKey.currentState!.save();
                           api.createShapes(
-                              int.parse(controller.text), Colors.red);
+                            int.parse(controller.text),
+                            Colors.blue,
+                          );
                         },
                         label: const Text('Create rectangles'),
                         icon: const Icon(Icons.add, size: 18),
                       ),
+                      // const SizedBox(height: 16),
+                      // ElevatedButton.icon(
+                      //   onPressed: () {
+                      //     api.createTableFromJson([
+                      //       {
+                      //         'name': 'Primary',
+                      //         'token': 'md.sys.color.primary',
+                      //         'value': {
+                      //           'color': colors.primary.toFigma(),
+                      //           'text': colors.primary.toHex(),
+                      //         },
+                      //       },
+                      //       {
+                      //         'name': 'Secondary',
+                      //         'token': 'md.sys.color.secondary',
+                      //         'value': {
+                      //           'color': colors.secondary.toFigma(),
+                      //           'text': colors.secondary.toHex(),
+                      //         },
+                      //       }
+                      //     ]);
+                      //   },
+                      //   label: const Text('Create table'),
+                      //   icon: const Icon(Icons.table_chart_outlined, size: 18),
+                      // ),
                     ],
                   ),
                 ),
@@ -167,20 +195,21 @@ extension on FigmaApi {
           },
           keys: ['id', 'name', 'width'],
         );
+        print(res);
         final result = res['result'] as Map;
         final id = result['id']?.toString();
         if (id != null) {
+          ids.add(id);
           final width = num.parse(result['width'].toString());
           await nodeOptions(id, attributes: {
             'x': i * (width + 200),
           });
-          ids.add(id);
         }
       }
     }
 
     if (type == FigmaEditorType.figJam) {
-      for (var i = 0; i < count - 1; i++) {
+      for (var i = 0; i < ids.length - 1; i++) {
         await execMethod(
           'createConnector',
           attributes: {
@@ -190,11 +219,10 @@ extension on FigmaApi {
               'magnet': 'AUTO',
             },
             'connectorEnd': {
-              'endpointNodeId': ids[i = 1],
+              'endpointNodeId': ids[i + 1],
               'magnet': 'AUTO',
             },
           },
-          keys: ['id', 'name', 'width'],
         );
       }
     }
@@ -202,5 +230,14 @@ extension on FigmaApi {
     await appendToCurrentPage(ids);
     await setSelection(ids);
     await scrollAndZoomIntoView(ids);
+  }
+}
+
+extension on Color {
+  String toHex() {
+    final r = red.toRadixString(16).padLeft(2, '0');
+    final g = green.toRadixString(16).padLeft(2, '0');
+    final b = blue.toRadixString(16).padLeft(2, '0');
+    return '#$r$g$b';
   }
 }

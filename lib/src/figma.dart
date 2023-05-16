@@ -54,14 +54,15 @@ class FigmaApi {
 
   Future<void> init() async {
     final info = await _result('init');
-    final editorType = (info['editorType'] ?? 'figma').toString();
+    final result = info['result'] as Map;
+    final editorType = (result['editorType'] ?? 'figma').toString();
     if (editorType == 'figma') {
       type = FigmaEditorType.figma;
     } else {
       type = FigmaEditorType.figJam;
     }
-    command = info['command']?.toString() ?? '';
-    pluginId = info['id']?.toString() ?? '';
+    command = result['command']?.toString() ?? '';
+    pluginId = result['id']?.toString() ?? '';
     initialized = true;
     print('Editor: $type');
     print('Command: "$command"');
@@ -104,6 +105,16 @@ class FigmaApi {
     return _result(name, attributes);
   }
 
+  // Future<FigmaJson> createTableFromJson(
+  //   List<FigmaJson> items, {
+  //   bool hideHeader = false,
+  // }) async {
+  //   return execCallback('create-table-from-json', attributes: {
+  //     'items': items,
+  //     'hide_header': hideHeader,
+  //   });
+  // }
+
   Future<FigmaJson> nodeOptions(
     String nodeId, {
     FigmaJson attributes = const {},
@@ -136,8 +147,8 @@ class FigmaApi {
 }
 
 extension FigmaColorUtils on Color {
+  /// RGB values between 0 and 1
   Map<String, double> toFigma() {
-    // RGB values between 0 and 1
     return {
       'r': red / 255,
       'g': green / 255,
