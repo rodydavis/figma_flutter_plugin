@@ -9,7 +9,6 @@
   "ui": "ui.html",
   "networkAccess": {
     "allowedDomains": [
-      "$BASE_URL/",
       "https://fonts.googleapis.com",
       "https://fonts.gstatic.com"
     ]

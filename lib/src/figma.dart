@@ -3,49 +3,6 @@ import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 
-typedef FigmaJson = Map<String, Object?>;
-
-void _send(
-  String type, [
-  FigmaJson data = const {},
-]) {
-  final parent = html.window.parent!;
-  final message = {
-    'pluginMessage': {'msg_type': type, ...data}
-  };
-  parent.postMessage(message, '*');
-}
-
-void _receive(ValueChanged<FigmaJson> callback) {
-  final parent = html.document.getElementById('output')!;
-  parent.addEventListener('figma', (event) {
-    final customEvent = event as html.CustomEvent;
-    final detail = customEvent.detail;
-    final result = detail;
-    callback(result);
-  });
-}
-
-Future<FigmaJson> _result(
-  String type, [
-  FigmaJson data = const {},
-]) async {
-  final completer = Completer<FigmaJson>();
-  final id = DateTime.now().millisecondsSinceEpoch.toString();
-  _receive((event) {
-    if (event['id'] == id) {
-      completer.complete(event);
-    }
-  });
-  _send(type, {'id': id, ...data});
-  return completer.future;
-}
-
-enum FigmaEditorType {
-  figma,
-  figJam,
-}
-
 class FigmaApi {
   FigmaEditorType type = FigmaEditorType.figma;
   String command = '';
@@ -134,6 +91,42 @@ class FigmaApi {
       if (message != null) message,
     ]);
   }
+
+  void _send(
+    String type, [
+    FigmaJson data = const {},
+  ]) {
+    final parent = html.window.parent!;
+    final message = {
+      'pluginMessage': {'msg_type': type, ...data}
+    };
+    parent.postMessage(message, '*');
+  }
+
+  void _receive(ValueChanged<FigmaJson> callback) {
+    final parent = html.document.getElementById('output')!;
+    parent.addEventListener('figma', (event) {
+      final customEvent = event as html.CustomEvent;
+      final detail = customEvent.detail;
+      final result = detail;
+      callback(result);
+    });
+  }
+
+  Future<FigmaJson> _result(
+    String type, [
+    FigmaJson data = const {},
+  ]) async {
+    final completer = Completer<FigmaJson>();
+    final id = DateTime.now().millisecondsSinceEpoch.toString();
+    _receive((event) {
+      if (event['id'] == id) {
+        completer.complete(event);
+      }
+    });
+    _send(type, {'id': id, ...data});
+    return completer.future;
+  }
 }
 
 extension FigmaColorUtils on Color {
@@ -156,6 +149,13 @@ extension FigmaColorUtils on Color {
   Color onColor() {
     return computeLuminance() > 0.5 ? Colors.black : Colors.white;
   }
+}
+
+typedef FigmaJson = Map<String, Object?>;
+
+enum FigmaEditorType {
+  figma,
+  figJam,
 }
 
 enum FigJamShapeType {

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 void main() async {
-  final baseUrl = 'https://rodydavis.github.io/figma_flutter_plugin';
+  final baseUrl = 'https://flutter.dev'; // TODO: Replace with your own URL
   final generatedDir = 'lib/src/generated';
 
   Future<void> build() async {
