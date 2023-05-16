@@ -43,6 +43,16 @@ dart scripts/build.dart
 
 Then open figma and import the manifest.json from the `build/figma` folder.
 
+## Screenshots
+
+### Figma
+
+![](/screenshots/figma.png)
+
+### FigJam
+
+![](/screenshots/figjam.png)
+
 ## Example
 
 ### UI
