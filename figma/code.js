@@ -1,18 +1,16 @@
 /// <reference path="../third_party/figma/index.d.ts" />
 
-figma.showUI(__html__, { width: 350, height: 650 });
+figma.showUI(__html__, { width: 350, height: 550 });
 
 figma.ui.onmessage = async (msg) => {
   const type = msg.msg_type;
   let { id } = msg;
-  callback(msg, "init", () => {
-    return {
-      msg_type: type,
-      editorType: figma.editorType,
-      command: figma.command,
-      id,
-    };
-  });
+  callback(msg, "init", () => ({
+    msg_type: type,
+    editorType: figma.editorType,
+    command: figma.command,
+    id,
+  }));
   callback(msg, "function", async () => {
     const { name, args, attrs, keys } = msg;
     const method = getNestedObject(figma, name);

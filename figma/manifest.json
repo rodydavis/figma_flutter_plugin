@@ -10,7 +10,6 @@
   "networkAccess": {
     "allowedDomains": [
       "$BASE_URL/",
-      "https://github.com",
       "https://fonts.googleapis.com",
       "https://fonts.gstatic.com"
     ]

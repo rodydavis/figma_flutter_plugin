@@ -13,7 +13,6 @@ void main() async {
       '--pwa-strategy=none',
       '--web-renderer=html',
       '--base-href=/figma_flutter_plugin/',
-      // '--dart2js-optimization=O1',
       '--dart-define=FIGMA=true',
     ]);
   }
@@ -70,15 +69,17 @@ void main() async {
     // Check for loadFonts
     if (!main.contains('loadFonts();')) {
       // Add loadFonts
+      const IS_FIGMA =
+          'const isFigma = bool.fromEnvironment(\'FIGMA\');\n  if (isFigma) await loadFonts();';
       if (main.contains('main() {')) {
         main = main.replaceFirst(
           'main() {',
-          'main() async  {\n  if (const bool.fromEnvironment(\'FIGMA\')) await loadFonts();',
+          'main() async  {\n  $IS_FIGMA',
         );
       } else if (main.contains('main() async {')) {
         main = main.replaceFirst(
           'main() async {',
-          'main() async {\n  if (const bool.fromEnvironment(\'FIGMA\')) await loadFonts();',
+          'main() async {\n  $IS_FIGMA',
         );
       }
     }
@@ -166,31 +167,21 @@ const OVERRIDES = r'''
 // Fix for fetch
 function FETCH(url, options = {}) {
   return new Promise(function (resolve, reject) {
-    const id = Math.random().toString(36).substring(2, 15);
-    const message = {
-      pluginMessage: {
-        msg_type: 'fetch',
-        id: id,
-        url: url,
-        options: options,
-      },
-    };
-    window.parent.postMessage(message, '*');
-    window.addEventListener('message', function (event) {
-      const msg = event.data.pluginMessage;
-      if (msg.msg_type === 'fetch' && msg.id === id) {
-        if (msg.error) {
-          reject(msg.error);
-        } else {
-          const raw = msg.result; // Array buffer
-          resolve(new Response(raw, {
-            status: msg.status,
-            statusText: msg.statusText,
-            headers: msg.headers,
-          }));
-        }
-      }
-    });
+    if (url.endsWith('FontManifest.json')) {
+      const json = [];
+      // Convert json to array buffer
+      const encoder = new TextEncoder();
+      const data = encoder.encode(JSON.stringify(json));
+      resolve(new Response(data, {
+        status: 200,
+        statusText: 'OK',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }));
+    } else {
+      reject('Not implemented');
+    }
   });
 };
 
@@ -204,24 +195,4 @@ function replaceState(state, title, url) {
 }
 window.history = window.history || {};
 window.history.replaceState = replaceState;
-''';
-
-const FONTS_FIX = r'''
-function loadFonts() {
-  const assets = ASSETS;
-
-  for (const { family, fonts } of assets) {
-    for (const { asset } of fonts) {
-      window.fetch(`${baseUrl}assets/${asset}`).then((res) => {
-        return res.arrayBuffer();
-      }).then((arrayBuffer) => {
-        const bytes = new Uint8Array(arrayBuffer);
-        const event = new CustomEvent('font', {
-          detail: { family, buffer: bytes },
-        });
-        output.dispatchEvent(event);
-      });
-    }
-  }
-}
 ''';
