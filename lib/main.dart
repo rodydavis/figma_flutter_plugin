@@ -5,11 +5,11 @@ import 'src/figma.dart';
 
 void main() async {
   if (bool.fromEnvironment('FIGMA')) await loadFonts();
-  runApp(const MyApp());
+  runApp(const FigmaPlugin());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class FigmaPlugin extends StatelessWidget {
+  const FigmaPlugin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,24 +20,28 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: title),
+      home: const Example(title: title),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class Example extends StatefulWidget {
+  const Example({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Example> createState() => _ExampleState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ExampleState extends State<Example> {
   final controller = TextEditingController(text: '5');
   final formKey = GlobalKey<FormState>();
   final api = FigmaApi();
+
+  int red = 0;
+  int green = 0;
+  int blue = 255;
 
   @override
   void initState() {
@@ -47,7 +51,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final color = Color.fromARGB(255, red, green, blue);
+    final onColor = color.onColor();
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -84,75 +91,94 @@ class _MyHomePageState extends State<MyHomePage> {
           }),
         ],
       ),
-      body: Center(
+      body: Theme(
+        data: theme.copyWith(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: color,
+            brightness: colors.brightness,
+          ),
+        ),
         child: !api.initialized
             ? const CircularProgressIndicator()
             : Form(
                 key: formKey,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 300),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      TextFormField(
-                        controller: controller,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Number of rectangles',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter a number';
-                          }
-                          if (int.tryParse(value) == null) {
-                            return 'Please enter a valid number';
-                          }
-                          return null;
-                        },
+                child: ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.color_lens, color: Colors.red),
+                      title: Text('Red'),
+                      subtitle: Slider(
+                        value: red.toDouble(),
+                        min: 0,
+                        max: 255,
+                        divisions: 255,
+                        onChanged: (value) =>
+                            setState(() => red = value.toInt()),
                       ),
-                      const SizedBox(height: 16),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          if (!formKey.currentState!.validate()) {
-                            return;
-                          }
-                          formKey.currentState!.save();
-                          api.createShapes(
-                            int.parse(controller.text),
-                            Colors.blue,
-                          );
-                        },
-                        label: const Text('Create rectangles'),
-                        icon: const Icon(Icons.add, size: 18),
+                    ),
+                    const SizedBox(height: 16),
+                    ListTile(
+                      leading:
+                          const Icon(Icons.color_lens, color: Colors.green),
+                      title: Text('Green'),
+                      subtitle: Slider(
+                        value: green.toDouble(),
+                        min: 0,
+                        max: 255,
+                        divisions: 255,
+                        onChanged: (value) =>
+                            setState(() => green = value.toInt()),
                       ),
-                      // const SizedBox(height: 16),
-                      // ElevatedButton.icon(
-                      //   onPressed: () {
-                      //     api.createTableFromJson([
-                      //       {
-                      //         'name': 'Primary',
-                      //         'token': 'md.sys.color.primary',
-                      //         'value': {
-                      //           'color': colors.primary.toFigma(),
-                      //           'text': colors.primary.toHex(),
-                      //         },
-                      //       },
-                      //       {
-                      //         'name': 'Secondary',
-                      //         'token': 'md.sys.color.secondary',
-                      //         'value': {
-                      //           'color': colors.secondary.toFigma(),
-                      //           'text': colors.secondary.toHex(),
-                      //         },
-                      //       }
-                      //     ]);
-                      //   },
-                      //   label: const Text('Create table'),
-                      //   icon: const Icon(Icons.table_chart_outlined, size: 18),
-                      // ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 16),
+                    ListTile(
+                      leading: const Icon(Icons.color_lens, color: Colors.blue),
+                      title: Text('Blue'),
+                      subtitle: Slider(
+                        value: blue.toDouble(),
+                        min: 0,
+                        max: 255,
+                        divisions: 255,
+                        onChanged: (value) =>
+                            setState(() => blue = value.toInt()),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    TextFormField(
+                      controller: controller,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Number of rectangles',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a number';
+                        }
+                        if (int.tryParse(value) == null) {
+                          return 'Please enter a valid number';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: color,
+                        foregroundColor: onColor,
+                      ),
+                      onPressed: () {
+                        if (!formKey.currentState!.validate()) {
+                          return;
+                        }
+                        formKey.currentState!.save();
+                        api.createShapes(int.parse(controller.text), color);
+                      },
+                      label: const Text('Create rectangles'),
+                      icon: const Icon(Icons.add, size: 18),
+                    ),
+                  ],
                 ),
               ),
       ),
@@ -230,14 +256,5 @@ extension on FigmaApi {
     await appendToCurrentPage(ids);
     await setSelection(ids);
     await scrollAndZoomIntoView(ids);
-  }
-}
-
-extension on Color {
-  String toHex() {
-    final r = red.toRadixString(16).padLeft(2, '0');
-    final g = green.toRadixString(16).padLeft(2, '0');
-    final b = blue.toRadixString(16).padLeft(2, '0');
-    return '#$r$g$b';
   }
 }

@@ -105,16 +105,6 @@ class FigmaApi {
     return _result(name, attributes);
   }
 
-  // Future<FigmaJson> createTableFromJson(
-  //   List<FigmaJson> items, {
-  //   bool hideHeader = false,
-  // }) async {
-  //   return execCallback('create-table-from-json', attributes: {
-  //     'items': items,
-  //     'hide_header': hideHeader,
-  //   });
-  // }
-
   Future<FigmaJson> nodeOptions(
     String nodeId, {
     FigmaJson attributes = const {},
@@ -154,6 +144,17 @@ extension FigmaColorUtils on Color {
       'g': green / 255,
       'b': blue / 255,
     };
+  }
+
+  String toHex() {
+    final r = red.toRadixString(16).padLeft(2, '0');
+    final g = green.toRadixString(16).padLeft(2, '0');
+    final b = blue.toRadixString(16).padLeft(2, '0');
+    return '#$r$g$b';
+  }
+
+  Color onColor() {
+    return computeLuminance() > 0.5 ? Colors.black : Colors.white;
   }
 }
 
