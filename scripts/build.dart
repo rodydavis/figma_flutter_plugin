@@ -21,9 +21,9 @@ void main() async {
   {
     print('Inline assets...');
     final jsonFile = File('build/web/assets/FontManifest.json');
-    if (!jsonFile.existsSync()) {
-      await build();
-    }
+    // Prebuild to get tree shaken material icons
+    await build();
+
     if (!Directory(generatedDir).existsSync()) {
       Directory(generatedDir).createSync(recursive: true);
     }

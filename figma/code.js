@@ -51,7 +51,6 @@ figma.ui.onmessage = async (msg) => {
     }
     return obj;
   });
-
   callback(msg, "append-to-current-page", () => {
     return nodeIdsCallback(msg, (nodes) => {
       for (const node of nodes) {
@@ -72,33 +71,6 @@ figma.ui.onmessage = async (msg) => {
       return true;
     });
   });
-  if (type === "fetch") {
-    let { url, options } = msg;
-    if (!url.startsWith("http")) {
-      url = `$BASE_URL/${url}`;
-    }
-    try {
-      const res = await fetch(url, options);
-      const meta = Object.assign({}, res);
-      // Delete functions
-      for (const key in meta) {
-        if (typeof meta[key] === "function") {
-          delete meta[key];
-        }
-      }
-      meta.headers = meta.headersObject;
-      delete meta.headersObject;
-
-      const raw = await res.arrayBuffer();
-      const result = Object.assign(
-        { msg_type: "fetch", result: raw, id },
-        meta
-      );
-      figma.ui.postMessage(result);
-    } catch (error) {
-      figma.ui.postMessage({ msg_type: "fetch", error, id, headers });
-    }
-  }
 };
 
 async function callback(msg, type, cb) {

@@ -56,6 +56,7 @@ class _ExampleState extends State<Example> {
           actions: [
             Builder(builder: (context) {
               return IconButton(
+                icon: const Icon(Icons.settings_outlined),
                 onPressed: () async {
                   showBottomSheet(
                     context: context,
@@ -81,7 +82,6 @@ class _ExampleState extends State<Example> {
                     },
                   );
                 },
-                icon: const Icon(Icons.settings),
               );
             }),
           ],
