@@ -31,6 +31,18 @@ git submodule update --init --recursive
 
 You need to update the name and description in `pubspec.yaml`.
 
+### Figma
+
+To use the plugin you need to import the manifest from the `build/figma` folder, not the top level `figma` folder.
+
+Run the build script:
+
+```bash
+dart scripts/build.dart
+```
+
+Then open figma and import the manifest.json from the `build/figma` folder.
+
 ## Example
 
 ### UI
