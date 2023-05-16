@@ -47,11 +47,11 @@ Then open figma and import the manifest.json from the `build/figma` folder.
 
 ### Figma
 
-![](/screenshots/figma.png)
+![](/screenshots/figma-preview.png)
 
 ### FigJam
 
-![](/screenshots/figjam.png)
+![](/screenshots/figjam-preview.png)
 
 ## Example
 
