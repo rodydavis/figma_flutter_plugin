@@ -73,12 +73,12 @@ void main() async {
       if (main.contains('main() {')) {
         main = main.replaceFirst(
           'main() {',
-          'main() async  {\n  if (bool.fromEnvironment(\'FIGMA\')) await loadFonts();',
+          'main() async  {\n  if (const bool.fromEnvironment(\'FIGMA\')) await loadFonts();',
         );
       } else if (main.contains('main() async {')) {
         main = main.replaceFirst(
           'main() async {',
-          'main() async {\n  if (bool.fromEnvironment(\'FIGMA\')) await loadFonts();',
+          'main() async {\n  if (const bool.fromEnvironment(\'FIGMA\')) await loadFonts();',
         );
       }
     }

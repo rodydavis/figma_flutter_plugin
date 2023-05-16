@@ -4,7 +4,7 @@ import 'src/generated/fonts.dart';
 import 'src/figma.dart';
 
 void main() async {
-  if (bool.fromEnvironment('FIGMA')) await loadFonts();
+  if (const bool.fromEnvironment('FIGMA')) await loadFonts();
   runApp(const FigmaPlugin());
 }
 
@@ -45,7 +45,11 @@ class _ExampleState extends State<Example> {
 
   @override
   void initState() {
-    api.init().then((value) => setState(() {}));
+    if (const bool.fromEnvironment('FIGMA')) {
+      api.init().then((value) => setState(() {}));
+    } else {
+      api.initialized = true;
+    }
     super.initState();
   }
 
