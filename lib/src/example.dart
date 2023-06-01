@@ -272,17 +272,19 @@ extension on FigmaApi {
 
     final futures = <Future>[];
     for (final entry in colors.entries) {
-      futures.add(execMethod(
-        'createPaintStyle',
-        attributes: {
-          'name': entry.key,
-          'paints': [
-            {
-              'type': 'SOLID',
-              'color': entry.value.toFigma(),
-            },
-          ],
-        },
+      futures.add(Future(
+        () async => execMethod(
+          'createPaintStyle',
+          attributes: {
+            'name': entry.key,
+            'paints': [
+              {
+                'type': 'SOLID',
+                'color': entry.value.toFigma(),
+              },
+            ],
+          },
+        ),
       ));
     }
     await Future.wait(futures);
