@@ -46,4 +46,4 @@ app.*.map.json
 /.figma/
 /node_modules/
 node_modules
-*.js
+figma/*.js
