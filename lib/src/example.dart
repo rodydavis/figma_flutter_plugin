@@ -84,6 +84,26 @@ class _ExampleState extends State<Example> {
                 },
               );
             }),
+            Builder(builder: (context) {
+              return IconButton(
+                icon: const Icon(Icons.palette_outlined),
+                onPressed: () async {
+                  final colors = List.generate(
+                    100,
+                    (index) => Color.fromARGB(
+                      255,
+                      index * 2,
+                      index * 2,
+                      index * 2,
+                    ),
+                  );
+                  await api.createStyles({
+                    for (int index = 0; index < colors.length; index++)
+                      'theme/Color$index': colors[index]
+                  });
+                },
+              );
+            }),
           ],
         ),
         body: !api.initialized
@@ -244,5 +264,27 @@ extension on FigmaApi {
     await appendToCurrentPage(ids);
     await setSelection(ids);
     await scrollAndZoomIntoView(ids);
+  }
+
+  Future<void> createStyles(Map<String, Color> colors) async {
+    if (type == FigmaEditorType.figJam) return;
+
+    final futures = <Future>[];
+    for (final entry in colors.entries) {
+      futures.add(execMethod(
+        'createPaintStyle',
+        attributes: {
+          'name': entry.key,
+          'paints': [
+            {
+              'type': 'SOLID',
+              'color': entry.value.toFigma(),
+            },
+          ],
+        },
+      ));
+    }
+    await Future.wait(futures);
+    print("Created ${futures.length} styles");
   }
 }
