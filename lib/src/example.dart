@@ -54,6 +54,27 @@ class _ExampleState extends State<Example> {
         appBar: AppBar(
           title: Text(widget.title),
           actions: [
+            if (api.type == FigmaEditorType.figma)
+              Builder(builder: (context) {
+                return IconButton(
+                  icon: const Icon(Icons.palette_outlined),
+                  onPressed: () async {
+                    final colors = List.generate(
+                      100,
+                      (index) => Color.fromARGB(
+                        255,
+                        index * 2,
+                        index * 2,
+                        index * 2,
+                      ),
+                    );
+                    await api.createStyles({
+                      for (int index = 0; index < colors.length; index++)
+                        'theme/Color$index': colors[index]
+                    });
+                  },
+                );
+              }),
             Builder(builder: (context) {
               return IconButton(
                 icon: const Icon(Icons.settings_outlined),
@@ -84,27 +105,6 @@ class _ExampleState extends State<Example> {
                 },
               );
             }),
-            if (api.type == FigmaEditorType.figma)
-              Builder(builder: (context) {
-                return IconButton(
-                  icon: const Icon(Icons.palette_outlined),
-                  onPressed: () async {
-                    final colors = List.generate(
-                      100,
-                      (index) => Color.fromARGB(
-                        255,
-                        index * 2,
-                        index * 2,
-                        index * 2,
-                      ),
-                    );
-                    await api.createStyles({
-                      for (int index = 0; index < colors.length; index++)
-                        'theme/Color$index': colors[index]
-                    });
-                  },
-                );
-              }),
           ],
         ),
         body: !api.initialized
