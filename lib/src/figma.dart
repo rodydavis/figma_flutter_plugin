@@ -24,6 +24,9 @@ class FigmaApi {
     print('Editor: $type');
     print('Command: "$command"');
     print('Plugin ID: $pluginId');
+    _receive((event) {
+      print('Received: $event');
+    });
   }
 
   Future<FigmaJson> execMethod(

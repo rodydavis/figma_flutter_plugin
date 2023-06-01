@@ -76,6 +76,52 @@ figma.ui.onmessage = async (msg) => {
     });
 };
 
+figma.on("selectionchange", () => {
+    const selection = figma.currentPage.selection;
+    const ids = selection.map((node) => node.id);
+    figma.ui.postMessage({ msg_type: "selectionchange", ids });
+});
+figma.on("currentpagechange", () => {
+    const currentPage = figma.currentPage;
+    const id = currentPage.id;
+    figma.ui.postMessage({ msg_type: "currentpagechange", id });
+});
+figma.on("close", () => {
+    figma.ui.postMessage({ msg_type: "close" });
+});
+figma.on("timerstart", () => {
+    const timer = figma.timer;
+    figma.ui.postMessage({ msg_type: "timerstart", timer });
+});
+figma.on("timerstop", () => {
+    const timer = figma.timer;
+    figma.ui.postMessage({ msg_type: "timerstop", timer });
+});
+figma.on("timerpause", () => {
+    const timer = figma.timer;
+    figma.ui.postMessage({ msg_type: "timerpause", timer });
+});
+figma.on("timerresume", () => {
+    const timer = figma.timer;
+    figma.ui.postMessage({ msg_type: "timerresume", timer });
+});
+figma.on("timeradjust", () => {
+    const timer = figma.timer;
+    figma.ui.postMessage({ msg_type: "timeradjust", timer });
+});
+figma.on("timerdone", () => {
+    const timer = figma.timer;
+    figma.ui.postMessage({ msg_type: "timerdone", timer });
+});
+figma.on("documentchange", (event) => {
+    const changes = event.documentChanges;
+    figma.ui.postMessage({ msg_type: "documentchange", changes });
+});
+figma.on("run", () => {
+    const command = figma.command;
+    figma.ui.postMessage({ msg_type: "run", command });
+});
+
 async function callback(msg: { id: string, msg_type: string }, type: string, cb: () => Promise<unknown>) {
     let { id, msg_type } = msg;
     if (type === msg_type) {
